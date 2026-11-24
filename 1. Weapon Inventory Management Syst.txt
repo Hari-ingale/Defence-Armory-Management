@@ -1,0 +1,13 @@
+1. Weapon Inventory Management System (2025)
+- Title: Optimization of Weapon Management in the Warehouse of the Indonesian Defense University Using Web-Based QR Code Technology.
+- Relevance: Weapon inventory, personnel records, issue/return tracking and reporting.
+- Read Research Paper (PDF)
+2. IoT-Based Ammunition Management (2023)
+- Title: Transforming Ammunition Management Through IoT-Enabled Inventory and Safety Monitoring System.
+- Relevance: Ammunition inventory, IoT monitoring and web-based dashboards.
+- Read Research Paper (PDF)
+3. Role-Based Access Control (1996)
+- Authors: Ravi S. Sandhu et al.
+- Title: Role-Based Access Control Models.
+- Relevance: Administrator, Armory Officer and Authorised Personnel access permissions.
+- Read Research Paper

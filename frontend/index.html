@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Armory Management System</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Login Screen -->
+    <div id="loginScreen" class="screen active">
+        <div class="login-container">
+            <div class="login-box">
+                <div class="login-header">
+                    <div class="logo-icon">
+                        <!-- <i class="fas fa-shield-alt"></i> -->
+                    </div>
+                    <h1>INDIAN ARMED FORCES</h1>
+                    <p>Govt of India</p>
+                </div>
+                <form id="loginForm" class="login-form">
+                    <div class="form-group">
+                        <label for="username">
+                            <i class="fas fa-user"></i>
+                            Username
+                        </label>
+                        <input 
+                            type="text" 
+                            id="username" 
+                            name="username" 
+                            placeholder="Enter your username"
+                            data-testid="login-username-input"
+                            required
+                        >
+                    </div>
+                    <div class="form-group">
+                        <label for="password">
+                            <i class="fas fa-lock"></i>
+                            Password
+                        </label>
+                        <input 
+                            type="password" 
+                            id="password" 
+                            name="password" 
+                            placeholder="Enter your password"
+                            data-testid="login-password-input"
+                            required
+                        >
+                    </div>
+                    <button type="submit" class="btn-primary" data-testid="login-submit-button">
+                        <span>Sign In</span>
+                        <i class="fas fa-arrow-right"></i>
+                    </button>
+                </form>
+                <div id="loginMessage" class="message" data-testid="login-message"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dashboard Screen -->
+    <div id="dashboardScreen" class="screen">
+        <!-- Header -->
+        <header class="dashboard-header">
+            <div class="header-content">
+                <div class="header-left">
+                    <div class="logo">
+                        <i class=""></i>
+                        <span>ARMORY MANAGEMENT</span>
+                    </div>
+                </div>
+                <div class="header-right">
+                    <div class="user-info">
+                        <i class="fas fa-user-circle"></i>
+                        <span id="loggedInUser" data-testid="logged-in-user">Admin</span>
+                    </div>
+                    <button id="logoutBtn" class="btn-logout" data-testid="logout-button">
+                        <i class="fas fa-sign-out-alt"></i>
+                        Logout
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Dashboard -->
+        <main class="dashboard-main">
+            <div class="dashboard-container">
+                <!-- Stats Overview -->
+                <div class="stats-section">
+                    <h2>Dashboard Overview</h2>
+                    <div class="stats-grid">
+                        <div class="stat-card" data-testid="total-issued-card">
+                            <div class="stat-icon" style="background: linear-gradient(135deg, #1c2964 0%, #130f2b 100%);">
+                                <i class="fas fa-gun"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3 id="totalIssued" data-testid="total-issued-count">0</h3>
+                                <p>Total Issued Weapons</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Cards -->
+                <div class="actions-section">
+                    <h2>Quick Actions</h2>
+                    <div class="action-cards">
+                        <div class="action-card" data-testid="register-soldier-card">
+                            <div class="card-icon" style="background: linear-gradient(135deg, #124314 0%, #091407 100%);">
+                                <i class="fas fa-user-plus"></i>
+                            </div>
+                            <h3>Soldier Registration</h3>
+                            <p>Register new soldier or update existing records</p>
+                            <button class="btn-action" onclick="showSection('registerSection')" data-testid="show-register-button">
+                                Register Now
+                            </button>
+                        </div>
+
+                        <div class="action-card" data-testid="issue-weapon-card">
+                            <div class="card-icon" style="background: linear-gradient(135deg, #0f3e68 0%, #0e1a24 100%);">
+                                <i class="fas fa-hand-holding"></i>
+                            </div>
+                            <h3>Issue Weapon</h3>
+                            <p>Issue weapons to registered soldiers</p>
+                            <button class="btn-action" onclick="showSection('issueSection')" data-testid="show-issue-button">
+                                Issue Weapon
+                            </button>
+                        </div>
+
+                        <div class="action-card" data-testid="return-weapon-card">
+                            <div class="card-icon" style="background: linear-gradient(135deg, #a82704 0%, #000000 100%);">
+                                <i class="fas fa-undo-alt"></i>
+                            </div>
+                            <h3>Return Weapon</h3>
+                            <p>Process weapon returns and log condition</p>
+                            <button class="btn-action" onclick="showSection('returnSection')" data-testid="show-return-button">
+                                Return Weapon
+                            </button>
+                        </div>
+
+                        <div class="action-card" data-testid="search-soldier-card">
+                            <div class="card-icon" style="background: linear-gradient(135deg, #0c0863 0%, #030206 100%);">
+                                <i class="fas fa-search"></i>
+                            </div>
+                            <h3>Search Soldier</h3>
+                            <p>View soldier details and weapon history</p>
+                            <button class="btn-action" onclick="showSection('searchSection')" data-testid="show-search-button">
+                                Search Now
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Register Soldier Section -->
+                <div id="registerSection" class="form-section" data-testid="register-section">
+                    <div class="section-header">
+                        <h2><i class="fas fa-user-plus"></i> Register Soldier</h2>
+                        <button class="btn-close" onclick="hideAllSections()" data-testid="close-register-button">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <form id="registerForm" class="data-form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="soldierId">Soldier ID *</label>
+                                <input type="text" id="soldierId" name="soldier_id" placeholder="e.g., SOL001" data-testid="soldier-id-input" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="soldierName">Full Name *</label>
+                                <input type="text" id="soldierName" name="name" placeholder="e.g., John Doe" data-testid="soldier-name-input" required>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="soldierRank">Rank *</label>
+                                <select id="soldierRank" name="rank" data-testid="soldier-rank-select" required>
+                                    <option value="">Select Rank</option>
+                                    <option value="Private">Private</option>
+                                    <option value="Corporal">Corporal</option>
+                                    <option value="Sergeant">Sergeant</option>
+                                    <option value="Lieutenant">Lieutenant</option>
+                                    <option value="Captain">Captain</option>
+                                    <option value="Major">Major</option>
+                                    <option value="Colonel">Colonel</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="soldierUnit">Unit *</label>
+                                <input type="text" id="soldierUnit" name="unit" placeholder="e.g., Alpha Company" data-testid="soldier-unit-input" required>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="soldierPhone">Phone</label>
+                                <input type="tel" id="soldierPhone" name="phone" placeholder="e.g., +1234567890" data-testid="soldier-phone-input">
+                            </div>
+                            <div class="form-group">
+                                <label for="soldierEmail">Email</label>
+                                <input type="email" id="soldierEmail" name="email" placeholder="e.g., soldier@army.mil" data-testid="soldier-email-input">
+                            </div>
+                        </div>
+                        <div class="form-actions">
+                            <button type="submit" class="btn-primary" data-testid="register-soldier-submit">
+                                <i class="fas fa-save"></i> Register Soldier
+                            </button>
+                            <button type="reset" class="btn-secondary" data-testid="register-soldier-reset">
+                                <i class="fas fa-redo"></i> Reset
+                            </button>
+                        </div>
+                    </form>
+                    <div id="registerMessage" class="message" data-testid="register-message"></div>
+                </div>
+
+                <!-- Issue Weapon Section -->
+                <div id="issueSection" class="form-section" data-testid="issue-section">
+                    <div class="section-header">
+                        <h2><i class="fas fa-hand-holding"></i> Issue Weapon</h2>
+                        <button class="btn-close" onclick="hideAllSections()" data-testid="close-issue-button">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <form id="issueForm" class="data-form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="issueSoldierId">Soldier ID *</label>
+                                <input type="text" id="issueSoldierId" name="soldier_id" placeholder="e.g., SOL001" data-testid="issue-soldier-id-input" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="issueWeaponId">Weapon ID *</label>
+                                <input type="text" id="issueWeaponId" name="weapon_id" placeholder="e.g., WPN001" data-testid="issue-weapon-id-input" required>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="weaponType">Weapon Type *</label>
+                                <select id="weaponType" name="weapon_type" data-testid="weapon-type-select" required>
+                                    <option value="">Select Type</option>
+                                    <option value="Rifle">Rifle</option>
+                                    <option value="Pistol">Pistol</option>
+                                    <option value="Machine Gun">Machine Gun</option>
+                                    <option value="Shotgun">Shotgun</option>
+                                    <option value="Sniper Rifle">Sniper Rifle</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="serialNumber">Serial Number *</label>
+                                <input type="text" id="serialNumber" name="serial_number" placeholder="e.g., SN123456" data-testid="serial-number-input" required>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="issuedBy">Issued By</label>
+                                <input type="text" id="issuedBy" name="issued_by" placeholder="e.g., Admin" data-testid="issued-by-input">
+                            </div>
+                        </div>
+                        <div class="form-actions">
+                            <button type="submit" class="btn-primary" data-testid="issue-weapon-submit">
+                                <i class="fas fa-check"></i> Issue Weapon
+                            </button>
+                            <button type="reset" class="btn-secondary" data-testid="issue-weapon-reset">
+                                <i class="fas fa-redo"></i> Reset
+                            </button>
+                        </div>
+                    </form>
+                    <div id="issueMessage" class="message" data-testid="issue-message"></div>
+                </div>
+
+                <!-- Return Weapon Section -->
+                <div id="returnSection" class="form-section" data-testid="return-section">
+                    <div class="section-header">
+                        <h2><i class="fas fa-undo-alt"></i> Return Weapon</h2>
+                        <button class="btn-close" onclick="hideAllSections()" data-testid="close-return-button">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <form id="returnForm" class="data-form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="returnWeaponId">Weapon ID *</label>
+                                <input type="text" id="returnWeaponId" name="weapon_id" placeholder="e.g., WPN001" data-testid="return-weapon-id-input" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="weaponCondition">Condition *</label>
+                                <select id="weaponCondition" name="condition" data-testid="weapon-condition-select" required>
+                                    <option value="GOOD">Good</option>
+                                    <option value="FAIR">Fair</option>
+                                    <option value="DAMAGED">Damaged</option>
+                                    <option value="NEEDS_REPAIR">Needs Repair</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="returnedBy">Returned By</label>
+                                <input type="text" id="returnedBy" name="returned_by" placeholder="e.g., Admin" data-testid="returned-by-input">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group full-width">
+                                <label for="returnRemarks">Remarks</label>
+                                <textarea id="returnRemarks" name="remarks" rows="3" placeholder="Any additional notes..." data-testid="return-remarks-textarea"></textarea>
+                            </div>
+                        </div>
+                        <div class="form-actions">
+                            <button type="submit" class="btn-primary" data-testid="return-weapon-submit">
+                                <i class="fas fa-check"></i> Return Weapon
+                            </button>
+                            <button type="reset" class="btn-secondary" data-testid="return-weapon-reset">
+                                <i class="fas fa-redo"></i> Reset
+                            </button>
+                        </div>
+                    </form>
+                    <div id="returnMessage" class="message" data-testid="return-message"></div>
+                </div>
+
+                <!-- Search Soldier Section -->
+                <div id="searchSection" class="form-section" data-testid="search-section">
+                    <div class="section-header">
+                        <h2><i class="fas fa-search"></i> Search Soldier</h2>
+                        <button class="btn-close" onclick="hideAllSections()" data-testid="close-search-button">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <form id="searchForm" class="data-form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="searchSoldierId">Soldier ID *</label>
+                                <input type="text" id="searchSoldierId" name="soldier_id" placeholder="e.g., SOL001" data-testid="search-soldier-id-input" required>
+                            </div>
+                        </div>
+                        <div class="form-actions">
+                            <button type="submit" class="btn-primary" data-testid="search-soldier-submit">
+                                <i class="fas fa-search"></i> Search
+                            </button>
+                        </div>
+                    </form>
+                    <div id="searchMessage" class="message" data-testid="search-message"></div>
+                    <div id="searchResults" class="search-results" data-testid="search-results"></div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,475 @@
+Deployment Instructions
+
+## 📦 What Has Been Created
+
+Your Armory Management System is now complete with:
+
+### Backend (`/app/armory-system/backend/`)
+- ✅ `server.js` - Express server with all API endpoints
+- ✅ `package.json` - Node.js dependencies
+- ✅ `.env` - Environment configuration
+- ✅ Dependencies installed (express, oracledb, bcrypt, cors, etc.)
+
+### Frontend (`/app/armory-system/frontend/`)
+- ✅ `index.html` - Complete UI with login and dashboard
+- ✅ `style.css` - Modern, responsive styling
+- ✅ `script.js` - All frontend logic and API calls
+
+### Database (`/app/armory-system/database/`)
+- ✅ `schema.sql` - Complete Oracle database schema
+  - Tables: users, soldiers, weapons, weapon_issue
+  - PL/SQL package: weapon_management_pkg
+  - Sample data: 3 soldiers pre-loaded
+  - Triggers for auto-timestamps
+
+### Documentation
+- ✅ `README.md` - Comprehensive documentation
+- ✅ `SETUP.md` - Quick setup guide
+- ✅ Test credentials stored in `/app/memory/test_credentials.md`
+
+## 🚀 How to Run on Your Machine
+
+### Prerequisites Check
+Since you mentioned Oracle is already installed, verify:
+```bash
+# Check Oracle listener
+lsnrctl status
+
+# Test Oracle connection
+sqlplus system/Oracle123@localhost:1521/XE
+```
+
+### Step 1: Setup Database (REQUIRED - First Time Only)
+
+1. **Connect to Oracle**
+   ```bash
+   sqlplus system/Oracle123@localhost:1521/XE
+   ```
+
+2. **Run the schema script**
+   ```sql
+   @/app/armory-system/database/schema.sql
+   ```
+   
+   This creates:
+   - All tables (users, soldiers, weapons, weapon_issue)
+   - PL/SQL procedures (issue_weapon, return_weapon)
+   - Sample soldiers (SOL001, SOL002, SOL003)
+   - Admin user with hashed password
+
+3. **Verify setup**
+   ```sql
+   -- Check tables
+   SELECT table_name FROM user_tables 
+   WHERE table_name IN ('USERS', 'SOLDIERS', 'WEAPONS', 'WEAPON_ISSUE');
+   
+   -- Check package
+   SELECT object_name, status FROM user_objects 
+   WHERE object_name = 'WEAPON_MANAGEMENT_PKG';
+   
+   -- Exit
+   exit;
+   ```
+
+### Step 2: Start Backend Server
+
+1. **Navigate to backend folder**
+   ```bash
+   cd /app/armory-system/backend
+   ```
+
+2. **Start the server**
+   ```bash
+   node server.js
+   ```
+   
+   OR for auto-restart on changes:
+   ```bash
+   npm start
+   ```
+
+3. **Expected output**
+   ```
+   🚀 Armory Management System Server
+   📡 Server running on port 8001
+   🔗 API endpoint: http://localhost:8001/api
+   ✓ Oracle Database connection pool created
+   ✓ Default admin user created
+   ✅ Server is ready to accept requests
+   ```
+
+### Step 3: Open Frontend
+
+**Method 1: Direct File (Recommended for testing)**
+```
+Open in your browser:
+file:///app/armory-system/frontend/index.html
+```
+
+**Method 2: HTTP Server (For production-like testing)**
+```bash
+cd /app/armory-system/frontend
+python3 -m http.server 3000
+```
+Then open: `http://localhost:3000`
+
+**Method 3: Live Server (VS Code)**
+- Install \"Live Server\" extension
+- Right-click on index.html
+- Select \"Open with Live Server\"
+
+### Step 4: Login and Test
+
+1. **Login**
+   - Username: `admin`
+   - Password: `ad133`
+
+2. **Test Flow**
+   - Register a new soldier
+   - Issue a weapon to that soldier
+   - Search for the soldier
+   - Return the weapon
+   - Search again to verify
+
+## 🧪 Testing Checklist
+
+### ✅ Database Setup
+- [ ] Oracle is running
+- [ ] Can connect with sqlplus
+- [ ] Schema.sql executed successfully
+- [ ] Tables created
+- [ ] PL/SQL package compiled
+- [ ] Sample soldiers exist
+
+### ✅ Backend
+- [ ] Dependencies installed (node_modules exists)
+- [ ] Server starts without errors
+- [ ] Shows \"Server is ready\" message
+- [ ] Admin user created message appears
+- [ ] Port 8001 is accessible
+
+### ✅ Frontend
+- [ ] Login page loads
+- [ ] Can see login form
+- [ ] CSS styling appears correctly
+- [ ] No console errors in browser
+
+### ✅ Integration
+- [ ] Can login with admin/ad133
+- [ ] Dashboard loads after login
+- [ ] Total Issued count appears
+- [ ] All action cards visible
+- [ ] Forms open when clicking buttons
+
+### ✅ Functionality
+- [ ] Can register a soldier
+- [ ] Can issue a weapon
+- [ ] Can search a soldier
+- [ ] Can return a weapon
+- [ ] Success/error messages appear
+- [ ] Data persists in database
+
+## 🔧 Troubleshooting Guide
+
+### Issue: Oracle Connection Failed
+
+**Symptoms:**
+```
+Error: ORA-12541: TNS:no listener
+```
+
+**Solutions:**
+1. Start Oracle listener:
+   ```bash
+   lsnrctl start
+   ```
+
+2. Check Oracle service is running
+
+3. Verify connection string in `.env`:
+   ```
+   DB_HOST=localhost
+   DB_PORT=1521
+   DB_SID=XE
+   ```
+
+### Issue: Admin User Not Created
+
+**Symptoms:**
+```
+Error creating admin user: table or view does not exist
+```
+
+**Solutions:**
+1. Run schema.sql first:
+   ```bash
+   sqlplus system/Oracle123@localhost:1521/XE @/app/armory-system/database/schema.sql
+   ```
+
+2. Restart the server
+
+### Issue: Port 8001 Already in Use
+
+**Symptoms:**
+```
+Error: listen EADDRINUSE: address already in use :::8001
+```
+
+**Solutions:**
+1. Find and kill the process:
+   ```bash
+   # Find process
+   lsof -i :8001
+   # or
+   netstat -ano | findstr :8001
+   
+   # Kill it
+   kill -9 <PID>
+   ```
+
+2. Or change port in `.env`:
+   ```
+   PORT=8002
+   ```
+
+### Issue: CORS Errors in Browser
+
+**Symptoms:**
+```
+Access to fetch at 'http://localhost:8001/api/login' from origin 'file://' has been blocked by CORS
+```
+
+**Solutions:**
+1. The backend has CORS enabled, this should not happen
+2. If it does, use HTTP server method instead of direct file:
+   ```bash
+   cd /app/armory-system/frontend
+   python3 -m http.server 3000
+   ```
+
+### Issue: Cannot Login
+
+**Symptoms:**
+- \"Invalid username or password\" message
+
+**Solutions:**
+1. Verify admin user exists in database:
+   ```sql
+   sqlplus system/Oracle123@localhost:1521/XE
+   SELECT username FROM users;
+   ```
+
+2. Check credentials:
+   - Username: `admin`
+   - Password: `ad133`
+
+3. Check backend logs for errors
+
+### Issue: Weapon Already Issued Error
+
+**Symptoms:**
+- \"Weapon is already issued to another soldier\"
+
+**Solutions:**
+1. This is expected behavior - return the weapon first
+2. Or use a different weapon ID
+
+### Issue: Soldier Not Found
+
+**Symptoms:**
+- \"Soldier not found. Please register the soldier first.\"
+
+**Solutions:**
+1. Register the soldier before issuing weapons
+2. Or use a pre-loaded soldier (SOL001, SOL002, SOL003)
+
+## 📊 Verify Installation
+
+### Database Check
+```sql
+-- Connect
+sqlplus system/Oracle123@localhost:1521/XE
+
+-- Check all tables exist
+SELECT table_name, num_rows 
+FROM user_tables 
+WHERE table_name IN ('USERS', 'SOLDIERS', 'WEAPONS', 'WEAPON_ISSUE');
+
+-- Check admin user
+SELECT username, role FROM users WHERE username = 'admin';
+
+-- Check sample soldiers
+SELECT soldier_id, name, rank FROM soldiers;
+
+-- Check package
+SELECT object_name, object_type, status 
+FROM user_objects 
+WHERE object_name = 'WEAPON_MANAGEMENT_PKG';
+```
+
+### Backend Health Check
+```bash
+# Test API
+curl http://localhost:8001/api/health
+
+# Expected response:
+# {\"status\":\"OK\",\"message\":\"Server is running\"}
+```
+
+### Test Login API
+```bash
+curl -X POST http://localhost:8001/api/login \
+  -H \"Content-Type: application/json\" \
+  -d '{\"username\":\"admin\",\"password\":\"ad133\"}'
+
+# Expected response:
+# {\"success\":true,\"message\":\"Login successful\",\"user\":{...}}
+```
+
+## 🎯 Sample Test Workflow
+
+### Complete End-to-End Test
+
+1. **Start Backend**
+   ```bash
+   cd /app/armory-system/backend
+   node server.js
+   ```
+
+2. **Open Frontend**
+   - Open `file:///app/armory-system/frontend/index.html`
+
+3. **Test 1: Login**
+   - Username: admin
+   - Password: ad133
+   - ✅ Should redirect to dashboard
+
+4. **Test 2: Register Soldier**
+   - Click \"Register Now\"
+   - Soldier ID: TEST001
+   - Name: Test User
+   - Rank: Private
+   - Unit: Test Unit
+   - Click \"Register Soldier\"
+   - ✅ Success message appears
+
+5. **Test 3: Issue Weapon**
+   - Click \"Issue Weapon\"
+   - Soldier ID: TEST001
+   - Weapon ID: WPNTEST001
+   - Type: Rifle
+   - Serial: TEST123
+   - Click \"Issue Weapon\"
+   - ✅ Success message appears
+   - ✅ Total Issued count increases
+
+6. **Test 4: Search Soldier**
+   - Click \"Search Now\"
+   - Soldier ID: TEST001
+   - Click \"Search\"
+   - ✅ Soldier details appear
+   - ✅ Weapon shows as \"issued\"
+
+7. **Test 5: Return Weapon**
+   - Click \"Return Weapon\"
+   - Weapon ID: WPNTEST001
+   - Condition: Good
+   - Click \"Return Weapon\"
+   - ✅ Success message appears
+   - ✅ Total Issued count decreases
+
+8. **Test 6: Verify Return**
+   - Search TEST001 again
+   - ✅ Weapon shows as \"returned\"
+
+## 📁 File Locations
+
+All files are in: `/app/armory-system/`
+
+```
+/app/armory-system/
+├── backend/
+│   ├── server.js          ← Express server
+│   ├── package.json       ← Dependencies
+│   ├── .env              ← Configuration
+│   └── node_modules/      ← Installed packages
+├── frontend/
+│   ├── index.html         ← UI
+│   ├── style.css          ← Styling
+│   └── script.js          ← Frontend logic
+├── database/
+│   └── schema.sql         ← Database setup
+├── README.md              ← Full documentation
+└── SETUP.md               ← Quick setup guide
+```
+
+## 🔐 Security Notes
+
+**For Production Deployment:**
+
+1. **Change Default Password**
+   - Edit `.env`: `ADMIN_PASSWORD=<new-strong-password>`
+   - Delete admin user from database
+   - Restart server to recreate with new password
+
+2. **Use Dedicated Database User**
+   - Don't use 'system' user
+   - Create specific user for the application
+   - Grant only required permissions
+
+3. **Environment Variables**
+   - Never commit `.env` to version control
+   - Use environment-specific configurations
+
+4. **Enable HTTPS**
+   - Use SSL certificates
+   - Redirect HTTP to HTTPS
+
+5. **Add Authentication Token**
+   - Implement JWT tokens
+   - Add token expiration
+   - Implement refresh tokens
+
+## 📞 Support
+
+If you encounter issues:
+
+1. Check the troubleshooting guide above
+2. Verify all prerequisites are met
+3. Check backend server logs
+4. Check browser console for errors
+5. Verify Oracle database is running
+
+## ✨ Features Implemented
+
+- ✅ Secure admin authentication with bcrypt
+- ✅ Soldier registration and management
+- ✅ Weapon issuance with validation
+- ✅ Weapon return with condition tracking
+- ✅ Comprehensive soldier search
+- ✅ Real-time statistics
+- ✅ Modern, responsive UI
+- ✅ PL/SQL stored procedures
+- ✅ Transaction management
+- ✅ Input validation
+- ✅ Error handling
+- ✅ Professional design
+
+## 🎉 You're Ready!
+
+Your Armory Management System is complete and ready to use. Follow the steps above to get started.
+
+**Default Login:**
+- Username: `admin`
+- Password: `ad133`
+
+**Next Steps:**
+1. Run the database schema
+2. Start the backend server
+3. Open the frontend
+4. Login and explore!
+
+---
+
+Built with Node.js, Express, Oracle Database, and modern web technologies.
+"

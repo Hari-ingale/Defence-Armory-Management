@@ -1,0 +1,196 @@
+"#!/bin/bash
+
+# ╔══════════════════════════════════════════════════════════════╗
+# ║     Armory Management System - Quick Commands                ║
+# ╚══════════════════════════════════════════════════════════════╝
+
+cat << 'EOF'
+
+██████╗ ██╗   ██╗██╗ ██████╗██╗  ██╗     ██████╗ ███████╗███████╗
+██╔═══██╗██║   ██║██║██╔════╝██║ ██╔╝     ██╔══██╗██╔════╝██╔════╝
+██║   ██║██║   ██║██║██║     █████╔╝      ██████╔╝█████╗  █████╗  
+██║▄▄ ██║██║   ██║██║██║     ██╔═██╗      ██╔══██╗██╔══╝  ██╔══╝  
+╚██████╔╝╚██████╔╝██║╚██████╗██║  ██╗     ██║  ██║███████╗██║     
+ ╚══▀▀═╝  ╚═════╝ ╚═╝ ╚═════╝╚═╝  ╚═╝     ╚═╝  ╚═╝╚══════╝╚═╝     
+
+        Armory Management System - Command Reference
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📦 SETUP COMMANDS (First Time Only)
+
+  1️⃣  Setup Database
+      sqlplus system/Oracle123@localhost:1521/XE @/app/armory-system/database/schema.sql
+
+  2️⃣  Verify Installation
+      cd /app/armory-system && ./verify.sh
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🚀 RUN COMMANDS (Every Time)
+
+  1️⃣  Start Backend Server
+      cd /app/armory-system/backend && node server.js
+
+  2️⃣  Open Frontend
+      Option A (Direct):     file:///app/armory-system/frontend/index.html
+      Option B (HTTP):       cd /app/armory-system/frontend && python3 -m http.server 3000
+
+  3️⃣  Login
+      Username: admin
+      Password: ad133
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🛠️  TROUBLESHOOTING COMMANDS
+
+  Check Oracle Status
+      lsnrctl status
+
+  Test Oracle Connection
+      sqlplus system/Oracle123@localhost:1521/XE
+
+  Check Backend Port
+      lsof -i :8001
+
+  Kill Process on Port 8001
+      kill -9 $(lsof -t -i:8001)
+
+  Test API Health
+      curl http://localhost:8001/api/health
+
+  Reinstall Dependencies
+      cd /app/armory-system/backend && rm -rf node_modules && npm install
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🗄️  DATABASE COMMANDS
+
+  Connect to Oracle
+      sqlplus system/Oracle123@localhost:1521/XE
+
+  Check Tables
+      SELECT table_name FROM user_tables WHERE table_name IN ('USERS', 'SOLDIERS', 'WEAPONS', 'WEAPON_ISSUE');
+
+  Check Admin User
+      SELECT username, role FROM users;
+
+  Check Soldiers
+      SELECT * FROM soldiers;
+
+  Check Issued Weapons
+      SELECT * FROM weapon_issue WHERE return_date IS NULL;
+
+  View Weapon History
+      SELECT wi.*, s.name, w.weapon_type 
+      FROM weapon_issue wi 
+      JOIN soldiers s ON wi.soldier_id = s.soldier_id 
+      JOIN weapons w ON wi.weapon_id = w.weapon_id 
+      ORDER BY wi.issue_date DESC;
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🧪 TEST COMMANDS (cURL)
+
+  Health Check
+      curl http://localhost:8001/api/health
+
+  Test Login
+      curl -X POST http://localhost:8001/api/login \
+        -H \"Content-Type: application/json\" \
+        -d '{\"username\":\"admin\",\"password\":\"ad133\"}'
+
+  Register Soldier
+      curl -X POST http://localhost:8001/api/register-soldier \
+        -H \"Content-Type: application/json\" \
+        -d '{
+          \"soldier_id\":\"TEST001\",
+          \"name\":\"Test Soldier\",
+          \"rank\":\"Private\",
+          \"unit\":\"Test Unit\"
+        }'
+
+  Issue Weapon
+      curl -X POST http://localhost:8001/api/issue-weapon \
+        -H \"Content-Type: application/json\" \
+        -d '{
+          \"soldier_id\":\"SOL001\",
+          \"weapon_id\":\"WPN001\",
+          \"weapon_type\":\"Rifle\",
+          \"serial_number\":\"SN123456\"
+        }'
+
+  Search Soldier
+      curl http://localhost:8001/api/search-soldier/SOL001
+
+  Get Total Issued
+      curl http://localhost:8001/api/total-issued
+
+  Return Weapon
+      curl -X POST http://localhost:8001/api/return-weapon \
+        -H \"Content-Type: application/json\" \
+        -d '{
+          \"weapon_id\":\"WPN001\",
+          \"condition\":\"GOOD\",
+          \"remarks\":\"Weapon in good condition\"
+        }'
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📚 DOCUMENTATION
+
+  Full Documentation:       /app/armory-system/README.md
+  Quick Setup:              /app/armory-system/SETUP.md
+  Deployment Guide:         /app/armory-system/DEPLOYMENT.md
+  Project Summary:          /app/armory-system/PROJECT_SUMMARY.md
+  Test Credentials:         /app/memory/test_credentials.md
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📁 PROJECT STRUCTURE
+
+  /app/armory-system/
+  ├── backend/
+  │   ├── server.js         ← Express server
+  │   ├── package.json      ← Dependencies
+  │   └── .env              ← Configuration
+  ├── frontend/
+  │   ├── index.html        ← UI
+  │   ├── style.css         ← Styling
+  │   └── script.js         ← Logic
+  ├── database/
+  │   └── schema.sql        ← Database setup
+  └── Documentation files
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+✨ QUICK START (3 STEPS)
+
+  1. sqlplus system/Oracle123@localhost:1521/XE @/app/armory-system/database/schema.sql
+  2. cd /app/armory-system/backend && node server.js
+  3. Open: file:///app/armory-system/frontend/index.html
+  
+  Login: admin / ad133
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🎯 DEFAULT CREDENTIALS
+
+  Admin:              admin / ad133
+  Sample Soldiers:    SOL001, SOL002, SOL003
+  Oracle:             system / Oracle123 @ localhost:1521/XE
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+💡 TIPS
+
+  - Run verify.sh to check installation
+  - Check backend logs if API fails
+  - Use HTTP server to avoid CORS issues
+  - Change default passwords in production
+  - Back up database regularly
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+EOF
+"
